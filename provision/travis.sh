@@ -48,7 +48,6 @@ elif [ ${TRAVIS_OS_NAME} == 'osx' ]; then
 	# cat ~/.cpanm/work/**/*.log
 fi
 
-
 cpanm Types::Serialiser
 cpanm EV
 
