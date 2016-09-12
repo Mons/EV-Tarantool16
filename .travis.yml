@@ -13,7 +13,7 @@ matrix:
   allow_failures:
     - os: osx
 install:
-  - provision/run.sh
+  - provision/travis.sh
 notifications:
   email: false
 sudo: required

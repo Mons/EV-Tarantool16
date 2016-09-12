@@ -1,84 +1,15 @@
 #!/usr/bin/env bash
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-TNTCARES=$DIR"/tnt-cares.sh"
+TNTCARES="${DIR}/tnt-cares.sh"
 
-echo ${TRAVIS_OS_NAME}
-
-mkdir -p $HOME/temp
-cd $HOME/temp
 TestTarantool_VER=0.033
 TestTarantool_URL=https://github.com/igorcoding/Test-Tarantool16/releases/download/v${TestTarantool_VER}/Test-Tarantool16-${TestTarantool_VER}.tar.gz
-wget ${TestTarantool_URL} -O $HOME/temp/test-tarantool16.tar.gz
-cd -
+TestTarantool_LOCATION=/tmp/test-tarantool16.tar.gz
+wget ${TestTarantool_URL} -O ${TestTarantool_LOCATION}
 
-if [ -z "$TRAVIS_OS_NAME" ] || [ ${TRAVIS_OS_NAME} == 'linux' ]; then
-	source $TNTCARES
-	
-	cpanm Types::Serialiser
-	cpanm EV
-	
-	cpanm Test::More
-	cpanm Test::Deep
-	cpanm AnyEvent
-	cpanm Proc::ProcessTable
-	cpanm Time::HiRes
-	cpanm Scalar::Util
-	cpanm Data::Dumper
-	cpanm Carp
-	cpanm $HOME/temp/test-tarantool16.tar.gz
-elif [ ${TRAVIS_OS_NAME} == 'osx' ]; then
-	echo "Mac OS X detected"
-	sudo sh -c 'echo "127.0.0.1 localhost" >> /etc/hosts'
-	sudo ifconfig lo0 alias 127.0.0.2 up
-	brew update
-	brew install curl
-	brew install https://raw.githubusercontent.com/Homebrew/homebrew/master/Library/Formula/cpanminus.rb
-	cpanm --version
-	# brew install https://raw.githubusercontent.com/Homebrew/homebrew/master/Library/Formula/c-ares.rb
-	
-	USR_SRC=/usr/local/src
-	sudo mkdir -p ${USR_SRC}
-	wget http://c-ares.haxx.se/download/c-ares-1.10.0.tar.gz -O $HOME/temp/c-ares-1.10.0.tar.gz
-	sudo tar -C ${USR_SRC} -xzvf $HOME/temp/c-ares-1.10.0.tar.gz
-	cd ${USR_SRC}/c-ares-1.10.0
-	sudo ./configure
-	sudo make
-	sudo make install
-	cd -
-	
-	sudo cp $DIR/macos_ares_rules.h /usr/local/include/ares_rules.h
-	
-	brew update
-	brew install tarantool
-	tarantool -V
-	mkdir -p ${HOME}/perl5
-	# cpanm --local-lib=${HOME}/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
-	export PERL5LIB=${HOME}/perl5
-	
-	cpanm --sudo Types::Serialiser
-	cpanm --sudo EV
-	
-	cpanm --sudo Test::More
-	cpanm --sudo Test::Deep
-	cpanm --sudo AnyEvent
-	cpanm --sudo Proc::ProcessTable
-	cpanm --sudo Time::HiRes
-	cpanm --sudo Scalar::Util
-	cpanm --sudo Data::Dumper
-	cpanm --sudo Carp
-	cpanm --sudo $HOME/temp/test-tarantool16.tar.gz
-	
-	cat ~/.cpanm/work/**/*.log
-fi
-
-cd -
-
-
-
-PREV_HOME=${HOME}
 
 if [ ${TRAVIS} == true ]; then
-	echo "TRAVIS"
+	
 else
 	sudo apt-get install -y valgrind perl-doc
     curl -L https://cpanmin.us | sudo perl - App::cpanminus
