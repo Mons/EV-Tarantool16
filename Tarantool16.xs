@@ -775,6 +775,17 @@ INLINE SV *get_bool(const char *name) {
 	return sv;
 }
 
+SV* status_const[] = {0,0,0,0,0,0,0};
+
+#define set_const(_stash, name) STMT_START {\
+	SV *tmp = newSVpvs(#name);\
+	(void)SvUPGRADE(tmp, SVt_PVIV);\
+	SvIV_set(tmp, name);\
+	SvIOK_on(tmp);\
+	SvREADONLY_on(tmp);\
+	status_const[name] = tmp;\
+	newCONSTSUB(_stash, #name, status_const[name]);\
+}STMT_END
 
 MODULE = EV::Tarantool16      PACKAGE = EV::Tarantool16
 PROTOTYPES: DISABLE
@@ -787,12 +798,19 @@ BOOT:
 
 	types_true  = get_bool("Types::Serialiser::true");
 	types_false = get_bool("Types::Serialiser::false");
+	HV *stash = gv_stashpv("EV::Tarantool16", TRUE);
+	set_const(stash, INITIAL);
+ 	set_const(stash, RESOLVING);
+ 	set_const(stash, CONNECTING);
+ 	set_const(stash, CONNECTED);
+ 	set_const(stash, DISCONNECTING);
+ 	set_const(stash, DISCONNECTED);
+ 	set_const(stash, RECONNECTING);
 }
 
 
-void new(SV *pk, HV *conf)
+void new(SV *, HV *conf)
 	PPCODE:
-		if (0) pk = pk;
 		xs_ev_cnn_new(TntCnn); // declares YourType *self, set ST(0)
 		self->default_on_connected_cb = self->cnn.on_connected;
 		self->cnn.on_connected = (c_cb_conn_t) tnt_on_connected_cb;
@@ -824,9 +842,8 @@ void new(SV *pk, HV *conf)
 		XSRETURN(1);
 
 
-void DESTROY(SV *this)
+void DESTROY(SV *)
 	PPCODE:
-		if (0) this = this;
 		xs_ev_cnn_self(TntCnn);
 
 		if (!PL_dirty) {
@@ -845,32 +862,28 @@ void DESTROY(SV *this)
 		xs_ev_cnn_destroy(self);
 
 
-void reqs(SV *this)
+void reqs(SV *)
 	PPCODE:
-		if (0) this = this;
 		xs_ev_cnn_self(TntCnn);
 		ST(0) = sv_2mortal(newRV_inc((SV *)self->reqs));
 		XSRETURN(1);
 
 
-void spaces(SV *this)
+void spaces(SV *)
 	PPCODE:
-		if (0) this = this;
 		xs_ev_cnn_self(TntCnn);
 		ST(0) = sv_2mortal(newRV_inc((SV *)self->spaces));
 		XSRETURN(1);
 		
-void sync(SV *this)
+void sync(SV *)
 	PPCODE:
-		if (0) this = this;
 		xs_ev_cnn_self(TntCnn);
 		ST(0) = sv_2mortal(newSViv(self->seq));
 		XSRETURN(1);
 		
 
-void ping(SV *this, ... )
+void ping(SV *, ... )
 	PPCODE:
-		if (0) this = this;
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -887,9 +900,8 @@ void ping(SV *this, ... )
 		XSRETURN_UNDEF;
 
 
-void select( SV *this, SV *space, SV *keys, ... )
+void select( SV *, SV *space, SV *keys, ... )
 	PPCODE:
-		if (0) this = this;
 		// TODO: croak cleanup may be solved with refcnt+mortal
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
@@ -907,9 +919,8 @@ void select( SV *this, SV *space, SV *keys, ... )
 		XSRETURN_UNDEF;
 
 
-void insert( SV *this, SV *space, SV *t, ... )
+void insert( SV *, SV *space, SV *t, ... )
 	PPCODE:
-		if (0) this = this;
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -925,9 +936,8 @@ void insert( SV *this, SV *space, SV *t, ... )
 
 		XSRETURN_UNDEF;
 		
-void replace( SV *this, SV *space, SV *t, ... )
+void replace( SV *, SV *space, SV *t, ... )
 	PPCODE:
-		if (0) this = this;
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -945,9 +955,8 @@ void replace( SV *this, SV *space, SV *t, ... )
 		XSRETURN_UNDEF;
 
 
-void update( SV *this, SV *space, SV *key, SV *operations, ... )
+void update( SV *, SV *space, SV *key, SV *operations, ... )
 	PPCODE:
-		if (0) this = this;
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -964,9 +973,8 @@ void update( SV *this, SV *space, SV *key, SV *operations, ... )
 		XSRETURN_UNDEF;
 
 
-void upsert( SV *this, SV *space, SV *tuple, SV *operations, ... )
+void upsert( SV *, SV *space, SV *tuple, SV *operations, ... )
 	PPCODE:
-		if (0) this = this;
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -983,9 +991,8 @@ void upsert( SV *this, SV *space, SV *tuple, SV *operations, ... )
 		XSRETURN_UNDEF;
 		
 
-void delete( SV *this, SV *space, SV *t, ... )
+void delete( SV *, SV *space, SV *t, ... )
 	PPCODE:
-		if (0) this = this;
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -1002,9 +1009,8 @@ void delete( SV *this, SV *space, SV *t, ... )
 		XSRETURN_UNDEF;
 
 
-void eval( SV *this, SV *expression, SV *t, ... )
+void eval( SV *, SV *expression, SV *t, ... )
 	PPCODE:
-		if (0) this = this;
 		// TODO: croak cleanup may be solved with refcnt+mortal
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
@@ -1022,9 +1028,8 @@ void eval( SV *this, SV *expression, SV *t, ... )
 		XSRETURN_UNDEF;
 
 
-void call( SV *this, SV *function_name, SV *t, ... )
+void call( SV *, SV *function_name, SV *t, ... )
 	PPCODE:
-		if (0) this = this;
 		// TODO: croak cleanup may be solved with refcnt+mortal
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
@@ -1040,3 +1045,20 @@ void call( SV *this, SV *function_name, SV *t, ... )
 		EXEC_REQUEST_TIMEOUT(self, ctxsv, ctx, iid, pkt, opts, cb);
 
 		XSRETURN_UNDEF;
+
+void ready( SV * )
+	PPCODE:
+		xs_ev_cnn_self(TntCnn);
+		ST(0) = self->cnn.state == CONNECTED ? &PL_sv_yes : &PL_sv_no;
+		XSRETURN(1);
+
+void status( SV *)
+  	PPCODE:
+   		xs_ev_cnn_self(TntCnn);
+    	if (status_const[self->cnn.state]){
+     	 	ST(0) = status_const[self->cnn.state];
+      		XSRETURN(1);
+   		}
+    	else {
+      		XSRETURN_UNDEF;
+    	}
