@@ -50,15 +50,15 @@ typedef struct {
 	uint32_t wbuf_limit;
 } TntCnn;
 
-static const uint32_t _SPACE_SPACEID = 280;
-static const uint32_t _INDEX_SPACEID = 288;
+// static const uint32_t _SPACE_SPACEID = 280;
+// static const uint32_t _INDEX_SPACEID = 288;
 
 static const uint32_t _VSPACE_SPACEID = 281;
 static const uint32_t _VINDEX_SPACEID = 289;
 
 // static const char *_SPACE_SELECTOR = "return unpack(box.space._space:select{})";
 // static const char *_INDEX_SELECTOR = "return unpack(box.space._index:select{})";
-static const size_t SELECTOR_STR_LENGTH = 40;
+// static const size_t SELECTOR_STR_LENGTH = 40;
 
 void tnt_on_connected_cb(ev_cnn *cnn, struct sockaddr *peer) {
 	TntCnn *self = (TntCnn *) cnn;
@@ -183,18 +183,6 @@ static void on_request_timer(EV_P_ ev_timer *t, int flags) {
 		} \
 	} \
 } STMT_END
-
-INLINE void _execute_eval(TntCnn *self, const char *expr) {
-	dSVX(ctxsv, ctx, TntCtx);
-	sv_2mortal(ctxsv);
-	uint32_t iid;
-
-	INIT_CTX(self, ctx, "eval", iid);
-	SV *pkt = pkt_eval(ctx, iid, self->spaces, sv_2mortal(newSVpvn(expr, SELECTOR_STR_LENGTH)), sv_2mortal(newRV_noinc((SV *) newAV())), NULL, NULL);
-	EXEC_REQUEST(self, ctxsv, ctx, iid, pkt, NULL);
-
-	TIMEOUT_TIMER(self, ctx, iid, self->cnn.rw_timeout);
-}
 
 INLINE void _execute_select(TntCnn *self, uint32_t space_id) {
 	dSVX(ctxsv, ctx, TntCtx);

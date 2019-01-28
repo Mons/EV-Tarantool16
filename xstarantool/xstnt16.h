@@ -1189,6 +1189,7 @@ static inline int parse_reply_body_data(TntCtx *ctx, HV *ret, const char *const 
 		return 0;
 
 	const char *p = data_begin;
+	// cwarn("ptr begin = %p, ptr end = %p",p, data_end);
 
 	uint32_t cont_size = 0;
 	switch (mp_typeof(*p)) {
@@ -1207,6 +1208,10 @@ static inline int parse_reply_body_data(TntCtx *ctx, HV *ret, const char *const 
 			uint32_t known_tuple_size = av_len(fields) + 1;
 			SV **name;
 			for (i = 0; i < cont_size; ++i) {
+				if (mp_typeof(*p) != MP_ARRAY) {
+					(void) av_push(tuples, decode_obj(&p));
+					continue;
+				}
 				HV *tuple = newHV();
 				AV *unknown_fields = NULL;
 				av_push(tuples, newRV_noinc((SV *)tuple));
@@ -1234,14 +1239,8 @@ static inline int parse_reply_body_data(TntCtx *ctx, HV *ret, const char *const 
 
 		} else {  // without space definition
 			for (i = 0; i < cont_size; ++i) {
-				AV *tuple = newAV();
-				av_push(tuples, newRV_noinc((SV *)tuple));
-				tuple_size = mp_decode_array(&p);
-				av_extend(tuple, tuple_size);
-
-				for (k = 0; k < tuple_size; ++k) {
-					(void) av_push(tuple, decode_obj(&p));
-				}
+				(void) av_push(tuples, decode_obj(&p));
+				// assert(p <= data_end);
 			}
 		}
 

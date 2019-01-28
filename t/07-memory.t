@@ -104,7 +104,7 @@ sub memcheck ($$$$) {
 	is 1, 1;
 }
 
-
+EV::now_update;
 diag '==== Memory tests ====' if $ENV{TEST_VERBOSE};
 
 subtest 'connect/disconnect test', sub {

@@ -102,6 +102,7 @@ my $c; $c = EV::Tarantool16->new({
 	},
 });
 
+EV::now_update;
 $c->connect;
 EV::loop;
 

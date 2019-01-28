@@ -31,6 +31,7 @@ t/lib/Renewer.pm
 t/tnt/app.lua
 t/tnt/init.lua
 Tarantool16.xs
+xd.h
 xstarantool/encdec.h
 xstarantool/endian_compat.h
 xstarantool/log.h

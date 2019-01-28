@@ -36,8 +36,14 @@ WriteMakefile(
 		'constant'           => 0,
 	},
 	LIBS              => [ $ARES_LDFLAGS ],
-	DEFINE            => '-g -ggdb -O1 -std=c99 -Wall',
+	DEFINE            => '-g -ggdb -O1 -std=c99 -Wall -Wno-format -Wno-self-assign',
 	LICENSE           => 'GPL',
+	depend => {
+		'Tarantool16.c' => 'hints.o msgpuck.o',
+		'hints.o'       => 'libs/msgpuck/hints.c',
+		'msgpuck.o'     => 'libs/msgpuck/msgpuck.c',
+	},
+	OBJECT            => 'Tarantool16.o hints.o msgpuck.o',
 	dist              => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', PREOP => $preop },
 	CONFIGURE         => sub {
 		require EV::MakeMaker;

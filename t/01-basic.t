@@ -61,6 +61,7 @@ my $tnt = {
 };
 
 $tnt = Test::Tarantool16->new(
+	# verbose  => 1,
 	title    => $tnt->{name},
 	host     => $tnt->{host},
 	port     => $tnt->{port},
@@ -89,7 +90,6 @@ EV::loop;
 $tnt->{cnntrace} = 0;
 my $SPACE_NAME = 'tester';
 
-
 my $c; $c = EV::Tarantool16->new({
 	host => $tnt->{host},
 	port => $tnt->{port},
@@ -106,6 +106,7 @@ my $c; $c = EV::Tarantool16->new({
 	},
 	connfail => sub {
 		my $err = 0+$!;
+		diag "@_";
 		is $err, Errno::ECONNREFUSED, 'connfail - refused' or diag "$!, $_[1]";
 		# $nc->(@_) if $cfs == 0;
 		$cfs++;
@@ -119,6 +120,7 @@ my $c; $c = EV::Tarantool16->new({
 	},
 });
 
+EV::now_update();
 $c->connect;
 EV::loop;
 

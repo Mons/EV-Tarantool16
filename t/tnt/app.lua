@@ -61,7 +61,7 @@ end
 -------------------------------------------------------------------------------
 
 local function init_tester(s)
-	_format = {
+	local _format = {
 		{type=B.types.string, name='_t1'},
 		{type=B.types.string, name='_t2'},
 		{type=B.types.unsigned, name='_t3'},
@@ -70,8 +70,8 @@ local function init_tester(s)
 	}
 	s:format(_format)
 
-	i = s:create_index('primary', {type = 'tree', parts = {1, B.types.string, 2, B.types.string, 3, B.types.unsigned}})
-	i = s:create_index('tt', {type = 'tree', unique = false, parts = { 4, 'number' } })
+	s:create_index('primary', {type = 'tree', parts = {1, B.types.string, 2, B.types.string, 3, B.types.unsigned}})
+	s:create_index('tt', {type = 'tree', unique = false, parts = { 4, 'number' } })
 	-- box.space.tester:insert({'s','a',3,4})
 end
 
@@ -80,8 +80,8 @@ function res()
 end
 
 function fill_tester()
-	arr = {1, 2, 3, "str1", 4}
-	obj = {}
+	local arr = {1, 2, 3, "str1", 4}
+	local obj = {}
 	obj['key1'] = "value1"
 	obj['key2'] = 42
 	obj[33] = true
@@ -94,9 +94,9 @@ function fill_tester()
 end
 
 function truncate_tester()
-	s = box.space.tester
-	t = {}
-	i = 1
+	local s = box.space.tester
+	local t = {}
+	local i = 1
 	for k, v in s:pairs() do
 		t[i] = {v[1], v[2], v[3]}
 		i = i + 1
@@ -110,12 +110,12 @@ end
 -------------------------------------------------------------------------------
 
 local function init_vinyler(s)
-	i = s:create_index('primary', {type = 'tree', parts = {1, B.types.string}})
+	s:create_index('primary', {type = 'tree', parts = {1, B.types.string}})
 end
 
 local function _truncate_vinyler(s)
-	t = {}
-	i = 1
+	local t = {}
+	local i = 1
 	for k, v in s:pairs() do
 		t[i] = {v[1]}
 		i = i + 1
@@ -127,12 +127,12 @@ local function _truncate_vinyler(s)
 end
 
 function truncate_vinyler()
-	s = box.space.vinyler
+	local s = box.space.vinyler
 	_truncate_vinyler(s)
 end
 
 function truncate_memier()
-	s = box.space.memier
+	local s = box.space.memier
 	_truncate_vinyler(s)
 end
 
@@ -141,8 +141,8 @@ end
 
 
 local function init_rtree(s)
-	i = s:create_index('primary', {type = 'TREE', parts = {1, B.types.string}})
-	i2 = s:create_index('spatial', {type = 'RTREE', unique = false, parts = {2, B.types.array}})
+	s:create_index('primary', {type = 'TREE', parts = {1, B.types.string}})
+	s:create_index('spatial', {type = 'RTREE', unique = false, parts = {2, B.types.array}})
 end
 
 function fill_rtree()
@@ -150,9 +150,9 @@ function fill_rtree()
 end
 
 function truncate_rtree()
-	s = box.space.rtree
-	t = {}
-	i = 1
+	local s = box.space.rtree
+	local t = {}
+	local i = 1
 	for k, v in s:pairs() do
 		t[i] = {v[1]}
 		i = i + 1

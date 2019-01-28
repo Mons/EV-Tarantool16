@@ -133,6 +133,8 @@ typedef enum {
 } tnt_format_t;
 
 typedef enum {
+	TNT_IT_BAD = -1,
+
 	TNT_IT_EQ = 0,
 	TNT_IT_REQ = 1,
 	TNT_IT_ALL = 2,
