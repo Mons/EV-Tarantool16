@@ -80,6 +80,12 @@ $tnt->start(timeout => 10, sub {
 });
 EV::loop;
 
+my $w; $w = EV::timer 1, 0, sub {
+	undef $w;
+	EV::unloop;
+};
+EV::loop;
+
 $tnt->{cnntrace} = 0;
 my $SPACE_NAME = 'tester';
 
@@ -332,7 +338,7 @@ subtest 'Insert tests', sub {
 			sync => ignore(),
 			schema_id => ignore(),
 		}],
-		
+
 		# Not all fields supplied tests
 		# You can't do this in 1.7.5 anymore
 	];
@@ -644,7 +650,7 @@ subtest 'Upsert tests', sub {
 			schema_id => ignore(),
 		}],
 	];
-	
+
 	Renewer::renew_tnt($c, $SPACE_NAME, 0, sub {
 		EV::unloop;
 	});
@@ -661,7 +667,7 @@ subtest 'Upsert tests', sub {
 		});
 		EV::loop;
 	}
-	
+
 	Renewer::renew_tnt($c, $SPACE_NAME, 1, sub {
 		EV::unloop;
 	});

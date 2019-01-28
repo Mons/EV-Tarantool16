@@ -29,3 +29,10 @@ dist/
 tnt_*
 
 EV-Tarantool16-*/
+.vscode
+packpack
+build
+*.snap
+*.xlog
+tarantool.log
+*.pid
