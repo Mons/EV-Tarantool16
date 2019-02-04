@@ -68,7 +68,7 @@ static TntSpace *evt_find_space(SV *space, HV *spaces, uint8_t log_level, SV *cb
 			return (TntSpace *) SvPVX(*key);
 		} else {
 			if (spaces != NULL) {
-				log_info(log_level, "No space config found for space %u. Creating dummy space.", ns);
+				// log_info(log_level, "No space config found for space %u. Creating dummy space.", ns);
 				dSVX(spcf, spc, TntSpace);
 
 				spc->id = ns;

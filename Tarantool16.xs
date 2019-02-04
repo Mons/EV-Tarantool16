@@ -66,6 +66,7 @@ void tnt_on_connected_cb(ev_cnn *cnn, struct sockaddr *peer) {
 		self->peer_info = *peer;
 	}
 	self->spaces = newHV();
+	do_enable_rw_timer((ev_cnn *) self);
 }
 
 INLINE void call_connected(TntCnn *self) {
@@ -73,14 +74,13 @@ INLINE void call_connected(TntCnn *self) {
 }
 
 INLINE void force_disconnect(TntCnn *self, const char *reason) {
-
 	on_connect_reset(&self->cnn, 0, reason);
 }
 
 static void on_request_timer(EV_P_ ev_timer *t, int flags) {
 	TntCtx *ctx = (TntCtx *) t;
 	TntCnn *self = (TntCnn *) ctx->self;
-	log_warn(self->log_level, "timer called on %p: %s", ctx, ctx->call);
+	// log_warn(self->log_level, "timer called on %p: %s", ctx, ctx->call);
 	ENTER;SAVETMPS;
 	dSP;
 
@@ -698,7 +698,7 @@ static void on_greet_read(ev_cnn *self, size_t len) {
 	char *tnt_ver_begin = NULL, *tnt_ver_end = NULL;
 	char *salt_begin = NULL, *salt_end = NULL;
 	decode_greeting(rbuf, tnt_ver_begin, tnt_ver_end, salt_begin, salt_end);
-	log_info(tnt->log_level, "%.*s", (int) (tnt_ver_end - tnt_ver_begin), tnt_ver_begin);
+	// log_info(tnt->log_level, "%.*s", (int) (tnt_ver_end - tnt_ver_begin), tnt_ver_begin);
 
 	self->ruse -= buf_len;
 	if (self->ruse > 0) {
