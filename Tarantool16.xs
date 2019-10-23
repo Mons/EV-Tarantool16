@@ -696,6 +696,8 @@ static void on_greet_read(ev_cnn *self, size_t len) {
 	}
 
 	char *tnt_ver_begin = NULL, *tnt_ver_end = NULL;
+	PERL_UNUSED_VAR(tnt_ver_begin);
+	PERL_UNUSED_VAR(tnt_ver_end);
 	char *salt_begin = NULL, *salt_end = NULL;
 	decode_greeting(rbuf, tnt_ver_begin, tnt_ver_end, salt_begin, salt_end);
 	// log_info(tnt->log_level, "%.*s", (int) (tnt_ver_end - tnt_ver_begin), tnt_ver_begin);
@@ -819,7 +821,7 @@ BOOT:
 
 void new(SV *pk, HV *conf)
 	PPCODE:
-		if (0) pk = pk;
+		PERL_UNUSED_VAR(pk);
 		xs_ev_cnn_new(TntCnn); // declares YourType *self, set ST(0)
 		self->default_on_connected_cb = self->cnn.on_connected;
 		self->cnn.on_connected = (c_cb_conn_t) tnt_on_connected_cb;
@@ -854,7 +856,7 @@ void new(SV *pk, HV *conf)
 
 void DESTROY(SV *this)
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		xs_ev_cnn_self(TntCnn);
 
 		if (!PL_dirty) {
@@ -875,7 +877,7 @@ void DESTROY(SV *this)
 
 void reqs(SV *this)
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		xs_ev_cnn_self(TntCnn);
 		ST(0) = sv_2mortal(newRV_inc((SV *)self->reqs));
 		XSRETURN(1);
@@ -883,14 +885,14 @@ void reqs(SV *this)
 
 void spaces(SV *this)
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		xs_ev_cnn_self(TntCnn);
 		ST(0) = sv_2mortal(newRV_inc((SV *)self->spaces));
 		XSRETURN(1);
 
 void sync(SV *this)
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		xs_ev_cnn_self(TntCnn);
 		ST(0) = sv_2mortal(newSViv(self->seq));
 		XSRETURN(1);
@@ -898,7 +900,7 @@ void sync(SV *this)
 
 void ping(SV *this, ... )
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -917,7 +919,7 @@ void ping(SV *this, ... )
 
 void select( SV *this, SV *space, SV *keys, ... )
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		// TODO: croak cleanup may be solved with refcnt+mortal
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
@@ -937,7 +939,7 @@ void select( SV *this, SV *space, SV *keys, ... )
 
 void insert( SV *this, SV *space, SV *t, ... )
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -955,7 +957,7 @@ void insert( SV *this, SV *space, SV *t, ... )
 
 void replace( SV *this, SV *space, SV *t, ... )
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -975,7 +977,7 @@ void replace( SV *this, SV *space, SV *t, ... )
 
 void update( SV *this, SV *space, SV *key, SV *operations, ... )
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -994,7 +996,7 @@ void update( SV *this, SV *space, SV *key, SV *operations, ... )
 
 void upsert( SV *this, SV *space, SV *tuple, SV *operations, ... )
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -1013,7 +1015,7 @@ void upsert( SV *this, SV *space, SV *tuple, SV *operations, ... )
 
 void delete( SV *this, SV *space, SV *t, ... )
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
 		xs_ev_cnn_checkconn_wlimit(self, cb, self->wbuf_limit);
@@ -1032,7 +1034,7 @@ void delete( SV *this, SV *space, SV *t, ... )
 
 void eval( SV *this, SV *expression, SV *t, ... )
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		// TODO: croak cleanup may be solved with refcnt+mortal
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
@@ -1052,7 +1054,7 @@ void eval( SV *this, SV *expression, SV *t, ... )
 
 void call( SV *this, SV *function_name, SV *t, ... )
 	PPCODE:
-		if (0) this = this;
+		PERL_UNUSED_VAR(this);
 		// TODO: croak cleanup may be solved with refcnt+mortal
 		xs_ev_cnn_self(TntCnn);
 		SV *cb = ST(items-1);
