@@ -1,6 +1,6 @@
 [submodule "evcnn"]
 	path = libs/evcnn
-	url = https://github.com/igorcoding/libevconnection.git
+	url = https://github.com/Mons/libevconnection.git
 [submodule "msgpuck"]
 	path = libs/msgpuck
 	url = https://github.com/tarantool/msgpuck.git
