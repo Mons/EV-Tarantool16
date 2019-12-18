@@ -59,6 +59,7 @@ sub new {
 	my $self = bless {
 		timeout => 1,
 		reconnect => 1/3,
+		ping_interval => 2/3,
 		cnntrace => 1,
 		ares_reuse => 0,
 		wbuf_limit => 16000,
@@ -150,6 +151,7 @@ sub new {
 				}
 			}
 		};
+		my $ping_interval = $self->{ping_interval};
 		$inst->{cnn} = EV::Tarantool16->new({
 			%{$self},
 			%{$inst->{cfg}},
@@ -185,7 +187,7 @@ sub new {
 									return;
 								}
 							}
-							my $w; $w = AE::timer 0.1, 0, sub {
+							my $w; $w = AE::timer $ping_interval, 0, sub {
 								undef $w;
 								$loop->();
 							};
