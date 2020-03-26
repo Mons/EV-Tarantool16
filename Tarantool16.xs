@@ -60,12 +60,15 @@ static const uint32_t _VINDEX_SPACEID = 289;
 // static const char *_INDEX_SELECTOR = "return unpack(box.space._index:select{})";
 // static const size_t SELECTOR_STR_LENGTH = 40;
 
+static void on_greet_read(ev_cnn *self, size_t len);
+
 void tnt_on_connected_cb(ev_cnn *cnn, struct sockaddr *peer) {
 	TntCnn *self = (TntCnn *) cnn;
 	if (likely(peer != NULL)) {
 		self->peer_info = *peer;
 	}
 	self->spaces = newHV();
+	self->cnn.on_read = (c_cb_read_t) on_greet_read;
 	do_enable_rw_timer((ev_cnn *) self);
 }
 
@@ -691,7 +694,7 @@ static void on_greet_read(ev_cnn *self, size_t len) {
 	char *end = rbuf + self->ruse;
 
 	ptrdiff_t buf_len = end - rbuf;
-	if (buf_len < 128) {
+	if (buf_len < TNT_GREET_LENGTH) {
 		return;
 	}
 
@@ -702,7 +705,7 @@ static void on_greet_read(ev_cnn *self, size_t len) {
 	decode_greeting(rbuf, tnt_ver_begin, tnt_ver_end, salt_begin, salt_end);
 	// log_info(tnt->log_level, "%.*s", (int) (tnt_ver_end - tnt_ver_begin), tnt_ver_begin);
 
-	self->ruse -= buf_len;
+	self->ruse -= TNT_GREET_LENGTH;
 	if (self->ruse > 0) {
 		//cwarn("move buf on %zu",self->ruse);
 		memmove(self->rbuf,rbuf,self->ruse);
